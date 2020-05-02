@@ -1,0 +1,30 @@
+{% extends "home_base.html" %}
+{% block title %}Fight Aganist Covid {% endblock %}
+{% block intro %}
+<div style=" margin-top:60px;position:relative;text-align: left;color: white;">
+    <img src="/static/images/banner.jpg" class="img-fluid" alt="banner">
+    <div class="d-none d-lg-block" style="position: absolute; bottom: 8px; left: 30px;">
+        <h1 class="">Break The Chain</h1>
+        <h2 class="">We care for you</h2>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<section class="jumbotron text-center">
+    <div class="container">
+        <img src="/static/images/clogo.png" class="img-fluid" alt="Lets-Fight-Corona">
+        <marquee width="100%" direction="left" height="100px"><font size="30px">
+            Stay Home ...... Stay Safe ...... Stay Alone ...... Self Isolate ...... </font></marquee>
+        <p class="lead text-muted">Check your probability of infection
+             with automated and evidence-based self-assessment...</p>
+        <p class="lead text-muted">Get your real-time evaluation by analyzing simple details such as 
+            your Body temperature, Body pain, Breathing conditions and more. <br>
+            <a href="#" class="btn btn-primary my-2">Main call to action</a>
+            <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+        </p>
+    </div>
+</section>
+<div id="covidstatusindia" class="container-fluid">
+<script>$('#covidstatusindia').load('mohfw.gov.in');</script>
+</div>
+{% endblock %}

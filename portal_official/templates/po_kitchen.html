@@ -1,0 +1,107 @@
+{% extends 'po_base.html' %}
+{% block title %}COMMUNITY KITCHEN{% endblock title %}
+{% block content %}
+<div class="card shadow-lg shadow">
+    <div class="card-header bg-gradient-primary text-white">
+        <h3 class="card-title">  Community Kitchen items</h3>
+        <p> <button onclick="$('#fooditems').html('Loading...').load('/portal_official/kitchen_process?items=all')"
+            class=" btn btn-sm btn-warning"><i class="fa fa-sync-alt"></i></button>&nbsp;<a class="btn btn-sm btn-info"> {% now 'd-m-Y'%}</a></p>
+        
+    </div>
+    <div class="card-body">
+    <div id="tree-body"></div>
+        <div class="row" id="fooditems">
+
+        </div>
+    </div>
+</div>
+<div class="modal" id="kitchen_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog static " role="document">
+        <div class="modal-content">
+        <form id="kitchen_modal_form" action="javascript:;">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Food Item</h5>
+            </div>
+            <div class="modal-body">
+                <!-- dfgdjfg -->
+                    <input name="item_date" type="date" required value="{% now 'Y-m-d'%}"
+                     min="{% now 'Y-m-d'%}">
+                    
+                    <div class="form-group">
+                        <label for="itemname">Item<span class="text-danger">*</span></label>
+                        <input required type="text" class="form-control" id="itemname" name="itemname"
+                            placeholder="Food Item">
+                    </div>
+                     <div class="form-group">
+                        <label for="itemdescription">Description<span class="text-danger">*</span></label>
+                        <input required type="text" class="form-control" id="itemdescription" name="itemdescription"
+                            placeholder=" Item description">
+                    </div>
+                     <div class="form-group">
+                        <label for="itemprice">Price<span class="text-danger">*</span></label>
+                        <input required type="tel" class="form-control" id="itemprice" name="itemprice"
+                            placeholder=" Item price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  size="3" maxlength="3">
+                        <div class="form-group">
+                        <label for="itemqty">Quantity<span class="text-danger">*</span></label>
+                        <input required type="tel" class="form-control" id="itemqty" name="itemqty"
+                            placeholder="Food Item" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  size="3" maxlength="3">
+                    </div>
+                    <input type="hidden"  name="items" value="addnewitem"> 
+                <!-- dfgdjfg -->
+               
+                
+            </div>
+            <div class="modal-footer">
+                 <button type="submit" class="btn btn-primary">Add </button>
+                <a  class="btn btn-danger text-white" data-dismiss="modal">Close</a>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $("#fooditems").load('/portal_official/kitchen_process?items=all')
+    });
+
+    function addfooditem() {
+        $('#kitchen_modal').modal({
+            keboard: false,
+            backdrop: 'static',
+            show: true
+        });
+        $('#kitchen_modal').modal('show');
+        $('#kitchen_modal_form').trigger("reset");
+
+
+    }
+
+    // this is the id of the form
+$("#kitchen_modal_form").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    var form = $(this);
+    var url = "/portal_official/kitchen_process";
+
+    $.ajax({
+           type: "GET",
+           url: url,
+           data: form.serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+               $("#tree-body").html('<div class="alert alert-success alert-dismissible fade show" role="alert">'+data+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                $('#kitchen_modal').modal('hide');
+                 $("#fooditems").load('/portal_official/kitchen_process?items=all')
+           },error:function(data){
+                              $("#tree-body").append('<div class="alert alert-danger alert-dismissible fade show" role="alert">'+data+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+
+           }
+         });
+
+
+});
+</script>
+{% endblock script %}

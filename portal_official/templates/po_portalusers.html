@@ -1,0 +1,96 @@
+{% extends 'po_base.html' %}
+{% block title %}PORTAL USERS{% endblock title %}
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Portal Users Data</h6>
+    </div>
+    {% if data is not None %}
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="dataTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Place</th>
+                        <th>PhoneNumber</th>
+                        <th>Actions</th>
+                        <th>Status</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for datas in data %}
+
+                    <tr>
+                        <td>{{datas.fname }} {{datas.lname }}</td>
+                        <td>{{datas.address }}</td>
+                        <td>{{datas.place }}</td>
+                        <td>{{datas.login }}</td>
+
+                        <td>
+                            <button onclick=" ViewProfile('{{ datas.login }}')" class="btn btn-sm btn-primary">View
+                                Profile</button>
+                            <button class="btn btn-sm btn-primary">View Report</button>
+                        </td>
+                        {% if datas.login.verified == True %}<td class="text-success">verified</td> {% else %} <td class="text-danger"> Not verified </td>{% endif %} 
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning alert-dismissible"><strong>No Users Registered</strong></div>
+    {% endif %}
+</div>
+<!-- Logout Modal-->
+<div class="modal fade" id="ProfileViewModal" tabindex="-1" role="dialog" aria-labelledby="ProfileViewModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ProfileViewModalLabel"></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+{% load static %}
+<script src="{% static 'sb/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'sb/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script>
+    // Call the dataTables jQuery plugin
+    $(document).ready(function () {
+        $('#dataTable').DataTable();
+    });
+
+    function ViewProfile(login) {
+        $("#ProfileViewModal .modal-body").html("Please wait <br> Loading data....");
+        $("#ProfileViewModalLabel").text("Loading Profile......");
+        $("#ProfileViewModal").modal('show');
+        $.ajax({
+            url: "/portal_official/userprofile?login=" + login,
+            success: function (data) {
+                $("#ProfileViewModal .modal-body").html(data);
+            },
+            error: function (data) {
+                $("#ProfileViewModal .modal-body").html("Error");
+                $("#ProfileViewModalLabel").text("No data")
+            }
+        });
+    }
+</script>
+{% endblock script %}

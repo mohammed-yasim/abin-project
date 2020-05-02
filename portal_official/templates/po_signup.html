@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="user-viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>{{ settings.PORTAL_NAME }} Official - Signup</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'sb/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+  <!-- Custom styles for this template-->
+  <link href="{% static 'sb/css/sb-admin-2.min.css' %}" rel="stylesheet">
+  <script src="{% static 'sb/vendor/jquery/jquery.min.js' %}"></script>
+  <script>
+  
+    $(document).ready(function () {
+      api_load('*', 'state', '#inputState')
+    });
+
+    function api_load(key, query, elem) {
+      $(elem).empty();
+      $(elem).append('<option  hidden="" disabled="disabled" selected="selected" value="">Choose...</option>');
+      $.get("/api/" + query + "?key=" + key, function (result) {
+        $.each(result.data, function (key, value) {
+          var optionExists = ($(elem + " option[value='" + value + "']").length > 0);
+          if (!optionExists) {
+
+            $(elem).append($('<option>', {
+              value: value
+            }).text(value[0].toUpperCase() + value.slice(1)));
+          }
+        });
+      });
+    }
+  </script>
+</head>
+
+<body class="bg-gradient-primary" style="background-image:url('/static/sb/cover.jpg');background-size:cover;">
+
+  <div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+      <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <div class="row justify-content-center">
+              <div class="col-lg-10">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">{{ settings.PORTAL_NAME }} Official Registration!</h1>
+                  </div>
+                  {% if error %}
+                    <div class="alert alert-danger mb-3" role="alert">{{ error }}</div>
+                    <script>
+                  
+                    $(document).ready(function(){
+                    {% if request.POST.user_localbody_name %}
+                    $("#Localbodyname").val("{{request.POST.user_localbody_name }}");
+                    {% endif %}
+                    {% if request.POST.user_email %}
+                    $("#user_input-email").val("{{request.POST.user_email }}");
+                    {% endif %}
+                    {% if request.POST.user_person %}
+                    $("#ContactPerson").val("{{request.POST.user_person }}");
+                    {% endif %}
+                    {% if request.POST.user_contact %}
+                    $("#ContactMobile").val("{{request.POST.user_contact }}");
+                    {% endif %}
+//----------------------------------------
+
+                    });
+
+                    </script>
+          {% endif %} 
+                  <form method='POST' class="user" autocomplete="off" role="presentation">
+                    {% csrf_token %}
+                    <div class="row">
+                      <div class="form-group col-md-4">
+                        <label for="inputState">State<span class="text-danger">*</span></label>
+                        <select name="user_state" required id="inputState"
+                          onchange="api_load(this.value,'district','#inputDistrict')" autocomplete="off"
+                          class="form-control" autofocus>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputDistrict">District<span class="text-danger">*</span></label>
+                        <select name="user_district" required id="inputDistrict"
+                          onchange="api_load('*','localbody_type','#inputLG')" autocomplete="off" class="form-control">
+
+                        </select>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputLG">Local Body Type<span class="text-danger">*</span></label>
+                        <select name="user_localbody" required id="inputLG" class="form-control" autocomplete="off">
+
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <input name="user_localbody_name" required type="text" class="form-control" id="Localbodyname" placeholder="LocalBody Name">
+                    </div>
+                    <div class="form-group">
+                      <input type="email" class="form-control form-control-user" id="user_input-email" name="user_email"
+                        required autocomplete="off" placeholder="Email Address">
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input type="text" class="form-control form-control-user" id="ContactPerson" name="user_person"
+                          required autocomplete="off" placeholder="Contact Person">
+                      </div>
+                      <div class="col-sm-6">
+                        <input type="tel" class="form-control form-control-user" id="ContactMobile" name="user_contact"
+                          required autocomplete="off" placeholder="Mobile Number" pattern=".{10}"  title="Enter Valid Mobile Number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" size="10" maxlength="10">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input type="password" class="form-control form-control-user" id="InputPassword"
+                          name="user_password" required autocomplete="new-password" placeholder="Password">
+                      </div>
+                      <div class="col-sm-6">
+                        <input type="password" class="form-control form-control-user" id="RepeatPassword"
+                          name="user_passwd" required autocomplete="new-password" placeholder="Confirm Password">
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                      Register Account
+                    </button>
+
+                    <br>
+                    <button type="reset">
+                      Reset
+                    </button>
+                  </form>
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" href="/project_admin">Forgot Password?</a>
+                  </div>
+                  <div class="text-center">
+                    <a class="small" href="/portal_official/">Already have an Registered? Login!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-dark">
+              <p class="text-center"> <a class="underlineHover" href="/portal">Back To Portal Home</a> | Copyright &copy; {{ settings.PORTAL_NAME}} {% now 'Y' %}</p>
+            </diV>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'sb/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'sb/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'sb/js/sb-admin-2.min.js' %}"></script>
+
+</body>
+
+</html>

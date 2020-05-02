@@ -1,0 +1,61 @@
+{% load static %}
+
+{% if orders is not None %}
+<form action="/portal/q/confirmorder" method="post" >
+{% csrf_token %}
+<input type="hidden" name="price" value="{{ total }}">
+<div class="modal-body">    
+<table class="table table-bordered">
+<thead>
+<tr>
+<th class="col">Item</th>
+<th class="col">Description</th>
+<th>Price</th>
+<th>Quantity</th>
+</tr>
+</thead>
+<tbody>
+{% for ordera,orderb in orders.items %}
+<tr>
+    {% for order_key,order_value in orderb.items %}
+    {% if order_key == 'properties' %}
+    <td>{{ order_value.item_name }}</td>
+    <td>
+    {{ order_value.item_description }}
+    <td>
+    {{ order_value.item_price }}
+    <input type="hidden" name="{{order_value.item_id}}@id" value = "{{order_value.item_id}}">
+    <input type="hidden" name="{{order_value.item_id}}@qty"
+    {% endif %}
+    {% if order_key == 'food_qty' %}
+    value ="{{order_value}}">
+    </td>
+    <td>
+    {{order_value}}
+    </td>
+    {% endif %}
+    
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+<!--Njan ippo varaaaam ammm-->
+<tr><td colspan="2"><strong>Order To : </strong> {{details.localbody}} {{details.localbody.localbody_type }}</td><th>Total Price</th><td>{{ total }}</td></tr>
+</table>
+
+ </div>
+<div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Confirm </button>
+                    <a class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                </div>
+</form>
+{% else %}
+<div class="modal-body"> 
+<center>
+<img src="{% static 'portal/empty.png' %}" class="img-fluid" width="250px"><br>
+Select something
+Nothing in Cart
+<hr>
+ <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button> </center>
+</div>
+{% endif %}

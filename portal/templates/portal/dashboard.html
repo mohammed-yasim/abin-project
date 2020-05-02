@@ -1,0 +1,7 @@
+{% extends 'portal_base.html' %}
+{% block title %} Dashboard {% endblock title %}
+{% block content %}
+<div id="covidstatusindia" class="container-fluid">
+<script>$('#covidstatusindia').load('/mohfw.gov.in');</script>
+</div>
+{% endblock content %}

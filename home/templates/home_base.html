@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>
+        {% block title %} {{ settings.PROJECT_NAME }} {% endblock %} | {{ settings.PROJECT_NAME }}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mdb.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/news.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <style>
+        html {
+            background:white;
+            font-size:90%;
+        }
+
+        .splash-container {
+            min-height: 80vh;
+        }
+
+        body {
+            -ms-overflow-style: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar fixed-top navbar-expand-lg navbar-light white">
+            <div class="container">
+                <img src="/static/images/icon-1.png" height="50px" alt="logo">
+                <a class="navbar-brand" style="font-family:Impact;font-weight:500;">{{ settings.PROJECT_NAME }}</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#">News</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#">Help</a>
+                        </li>
+                        <li class="nav-item">
+                            <div class="justify-content-center">
+                                <a class="btn btn-warning btn-sm"  href="/covid-test">Consult Covid</a>
+                                <a class="btn btn-danger btn-sm"  href="/portal">{{ settings.PORTAL_NAME}}</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        {% block intro %}
+        <div style=" margin-top:50px;width:100%;height:15px;background:transparent;"></div>
+        {% endblock %}
+    </header>
+        {% block content %} <main class="splash-container"></main>{% endblock %}
+    <!-- *********************** -->
+    <div id="newsTicker1Box" style="position:fixed;bottom:0;left:0;right:0;z-index:9999">
+        <div class="bn-breaking-news" id="newsTicker1">
+            <div class="bn-label">Latest News</div>
+            <div class="bn-news">
+                <ul>
+                </ul>
+            </div>
+            <div class="bn-controls">
+                <span><font  style="font-size:6pt" class="text-right">newsapi.org</font></span>
+                <button><span class="bn-arrow bn-prev"></span></button>
+                <button><span class="bn-action"></span></button>
+                <button><span class="bn-arrow bn-next"></span></button>
+            </div>
+        </div>
+    </div>
+    <!-- *********************** -->
+    <script src="{% static 'js/news.js' %}"></script>
+    <script>
+    $(window).on('load', function() {
+        $('#newsTicker1 ul').load("newsapi.org", function( response, status, xhr ) {
+            if ( status == "error" ) {
+                $('#newsTicker1Box').fadeOut();
+            }
+            else{
+                $('#newsTicker1').breakingNews();
+            }
+        });
+    });
+    </script>
+    <!-- Footer -->
+    <footer class="page-footer font-small teal pt-4">
+
+        <!-- Footer Text -->
+        <div class="container-fluid text-center text-md-left">
+
+            <!-- Grid row -->
+            <div class="row">
+
+                <!-- Grid column -->
+                <div class="col-md-6 mt-md-0 mt-3">
+
+                    <!-- Content -->
+                    <h5 class="font-weight-bold">About the Project</h5>
+                    <p>The novel coronavirus is a recently emerged human pathogen that has spread widely since December 2019. 
+
+                        The project entitled BREAK THE CHAIN is an online web application 
+                        which is intended to be helpful for the state and central governments in this 
+                        uncontrollable situation of Corona virus(covid-19) outbreak. </p>
+
+                </div>
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none pb-3">
+                <div class="col-md-3 mx-auto">
+
+                    <!-- Links -->
+                    <h5 class="font-weight-bold text-uppercase mt-3 mb-4">Links</h5>
+
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="#!">Awareness</a>
+                        </li>
+                        <li>
+                            <a href="#!">Guidelines</a>
+                        </li>
+                        <li>
+                            <a href="#!">Very long link 3</a>
+                        </li>
+                        <li>
+                            <a href="#!">Very long link 4</a>
+                        </li>
+                    </ul>
+
+                </div>
+                <!-- Grid column -->
+
+                <hr class="clearfix w-100 d-md-none">
+                <div class="col-md-3 mx-auto">
+
+                    <!-- Links -->
+                    <h5 class="font-weight-bold text-uppercase mt-3 mb-4">Links</h5>
+
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="#!">Link 1</a>
+                        </li>
+                        <li>
+                            <a href="#!">Link 2</a>
+                        </li>
+                        <li>
+                            <a href="#!">Link 3</a>
+                        </li>
+                        <li>
+                            <a href="#!">Link 4</a>
+                        </li>
+                    </ul>
+
+                </div>
+                <!-- Grid column -->
+            </div>
+            <!-- Grid row -->
+
+        </div>
+        <!-- Footer Text -->
+
+        <!-- Copyright -->
+        <div class="footer-copyright text-center py-3 mb-4">{{ settings.PROJECT_NAME }} © {% now 'Y' %} Copyright <a href="">
+                Abin</a>
+        </div>
+        <!-- Copyright -->
+
+    </footer>
+    <!-- Footer -->
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/mdb.min.js' %}"></script>
+</body>
+
+</html>

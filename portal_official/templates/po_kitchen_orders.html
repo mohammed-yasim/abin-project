@@ -1,0 +1,52 @@
+{% extends 'po_base.html' %}
+{% block title %}COMMUNITY KITCHEN ORDERS{% endblock title %}
+{% block content %}
+<div class="card shadow shadow-lg shake">
+    <div class="card-header bg-gradient-primary text-white">
+        <h3 class="card-title">Community Kitchen Order
+        <a href="/portal_official/kitchen_orders"
+            class="float-right btn btn-sm btn-warning btn-toolbar">
+            <span aria-hidden="true"><i class="fa fa-sync-alt"></i></span></a>
+            </h3>
+            <p>{% now 'd-m-Y'%}</p>
+    </div>
+    <div class="card-body bg-white">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Items</th>
+<th>Price</th>
+<th>Adress</th>
+<th>Actions</th>
+
+</tr>
+<tbody>
+
+{% for datas in data%}
+<tr>
+    <td>{{datas.order_id}}</td>
+    <td>
+    {% for dataset in list %}
+    {% if dataset.uid == datas.uid %}
+     <li>
+    {{ dataset.item_id.item_name}} :  {{ dataset.item_qty}} 
+    </li>
+    {% endif %}
+    {% endfor %}
+    </td>
+    <td>{{ datas.total_price }}</td>
+    <td><ol>{{ datas.user_id.fname }} {{ datas.user_id.lname }}</ol>
+    <ol>{{datas.user_id.address}}</ol>
+    </td>
+    
+</tr>
+{% endfor %}
+</tbody>
+</table>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+</script>
+{% endblock script %}

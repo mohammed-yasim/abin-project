@@ -1,0 +1,165 @@
+{% extends 'portal_base.html' %}
+{% block title %} Profile {% endblock title %}
+{% block content %}
+    <div class=" row justify-content-center">
+    <div class="col-10 shadow-lg bg-white p-0 mb-5 rounded">
+        <div class="card">
+            <div class="card-header bg-dark text-light">
+                <span class="badge badge-pill badge-warning float-right">Not Verified</span>
+                <h5 class="card-title mb-0">Profile information <span class="text-danger">*</span></h5>
+                <p>(Commmunication Address)</p>
+            </div>
+            <script>
+                function api2_load(key, query, elem1, elem2) {
+                    $.get("/profile_api/" + query + "?key=" + key, function (result) {
+                        $(elem1).val(result.data1)
+                        $(elem2).val(result.data2)
+                    });
+                }
+
+                function api_load(key, query, elem) {
+                    $(elem).empty();
+                    $(elem).append(
+                        '<option  hidden="" disabled="disabled" selected="selected" value="">Choose...</option>'
+                    );
+                    if (key == "") {
+                        key = '*'
+                    }
+                    $.get("/profile_api/" + query + "?key=" + key, function (result) {
+                        $.each(result.data, function (key, value) {
+                            var optionExists = ($(elem + " option[value='" + value + "']")
+                                .length > 0);
+                            if (!optionExists) {
+
+                                $(elem).append($('<option>', {
+                                    value: value
+                                }).text(value[0].toUpperCase() + value.slice(1)));
+                            }
+                        });
+                    });
+                }
+                $(document).ready(function () {
+                    $.ajaxSetup({
+                        // Disable caching of AJAX responses
+                        cache: false
+                    }); 
+                    //{% if profile_status == '0' %}
+
+                    api_load('*', 'state', '#inputState');
+                
+                //{% endif %}
+            });
+            </script>
+            <div class="card-body bg-light text-dark">
+                {% if profile_status == '0' %}
+                    <div class="alert alert-success"> Welcome to {{ settings.PROJECT_NAME }}, Please update your profile to use {{ settings.PORTAL_NAME }}, </div>
+                {% endif %}
+                <form method="POST" action="/portal/save_profile">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_status" value="{{ profile_status }}">
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="inputState">State<span class="text-danger">*</span></label>
+                            <select required id="inputState" class="form-control" name="state"
+                                {% if profile_status == '0' %}
+                                onchange="api_load(this.value,'district','#inputDistrict')"
+                                {% else %}
+                                onclick="api_load('*', 'state', '#inputState');$(this).attr('onclick',' ')"
+                                onchange="api_load(this.value,'district','#inputDistrict')"
+                                {% endif %}
+                                autocomplete="off">
+                                {% if profile_status == '1' %}
+                                <option value="{{ profile.state }}" selected>{{ profile.state }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputDistrict">District<span class="text-danger">*</span></label>
+                            <select required id="inputDistrict" class="form-control" name="district"
+                                onchange="api_load(this.value,'localbody','#inputLocal');"
+                                >
+                                {% if profile_status == '1' %}
+                                <option value="{{ profile.district }}" selected>{{ profile.district }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputLocal">Local Body <span class="text-danger">*</span></label>
+                            <select required id="inputLocal" class="form-control"
+                                onchange="api2_load(this.value,'localbody2','#hidden_name','#hidden_type')">
+                                {% if profile_status == '1' %}
+                                <option value="{{ profile.lbname }} {{ profile.lbtype }}" selected>{{ profile.lbname }}
+                                    {{ profile.lbtype }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <p class="text-justify">NB : if current local body not found please select 'other' from options</p>
+                    <input type="hidden" name="lbname" id="hidden_name" {% if profile_status == '1' %}value="{{profile.lbname}}"{% endif %}>
+                    <input type="hidden" name="lbtype" id="hidden_type" {% if profile_status == '1' %}value="{{profile.lbtype}}"{% endif %}>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputFirstName">First name<span class="text-danger">*</span></label>
+                            <input required type="text" class="form-control" id="inputFirstName" name="fname"
+                                placeholder="First name" {% if profile_status == '1' %}value="{{ profile.fname }}"{% endif %}>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputLastName">Last name<span class="text-danger">*</span></label>
+                            <input required type="text" class="form-control" id="inputLastName" name="lname"
+                                placeholder="Last name" {% if profile_status == '1' %}value="{{profile.lname}}"{% endif %}>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="inputEmail4">Email</label>
+                            <input type="email" class="form-control" id="inputEmail4" name="email" placeholder="Email"
+                            {% if profile_status == '1' %}value="{{profile.email}}"{% endif %}>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputAltno">Alternative Number</label>
+                            <input type="tel" class="form-control" id="inputAltno" name="altno"
+                                placeholder="Alternate Phno" autocomplete="off" pattern=".{10}"
+                                title="Enter Valid Phone Number"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                                size="10" maxlength="10" {% if profile_status == '1' %}value="{{profile.altno}}"{% endif %}>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress">Address<span class="text-danger">*</span></label>
+                        <input required type="text" class="form-control" id="inputAddress" name="address"
+                            placeholder="House, Apartment" {% if profile_status == '1' %}value="{{profile.address}}"{% endif %}>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress2">Place/Street/Town<span class="text-danger">*</span></label>
+                        <input required type="text" class="form-control" id="inputAddress2" name="place"
+                            placeholder="Place" {% if profile_status == '1' %}value="{{profile.place}}"{% endif %}>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputCity">City<span class="text-danger">*</span></label>
+                            <input required type="text" class="form-control" id="inputCity" name="city"
+                                placeholder="City" {% if profile_status == '1' %}value="{{profile.city}}"{% endif %}>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="inputZip">PIN Code <span class="text-danger">*</span></label>
+                            <input required type="tel" class="form-control" id="inputZip" name="pincode" placeholder=""
+                                autocomplete="off" pattern=".{6}" title="Enter Valid Pincode"
+                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                                size="6" maxlength="6" {% if profile_status == '1' %}value="{{profile.pincode}}"{% endif %}>
+                        </div>
+                    </div>
+                    <hr>
+                    <div>
+                        <p class="text-justify">I accept the terms and conditions of portal and above information is
+                            true to the best of my knowledge.</span></p>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+                <hr>
+                <p><span class="text-danger">* mandatory fields</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

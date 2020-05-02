@@ -1,0 +1,213 @@
+{% extends 'portal_base.html' %}
+{% block title %}COMMUNITY KITCHEN{% endblock title %}
+{% block content %}
+<div class="container-fluid p-0 mt-5 mb-3" style="overflow:hidden">
+
+    <!-- ========================= SECTION CONTENT ========================= -->
+
+    <div class="row justify-content-center">
+     {% if data is not None %}
+    <div class="{% if food_items is not None %} col-lg-11 {% else %} col-lg-8 {% endif %} mb-3">
+    <div class="card shadow shadow-lg ">
+    <div class="card-header bg-primary text-white">
+        <p class="card-title font-weight-bold">My Orders
+        <a href="/portal/q/kitchen"
+            class="float-right btn btn-sm btn-warning btn-toolbar">
+            <span aria-hidden="true"><i class="fa fa-sync-alt"></i></span></a>
+            </p>
+    </div>
+    <div class="card-body bg-white">
+   
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Items</th>
+<th>Price</th>
+<th>Adress</th>
+<th>Actions</th>
+
+</tr>
+<tbody>
+
+{% for datas in data%}
+<tr>
+    <td>{{datas.order_id}}</td>
+    <td>
+    {% for dataset in list %}
+    {% if dataset.uid == datas.uid %}
+     <li>
+    {{ dataset.item_id.item_name}} :  {{ dataset.item_qty}} 
+    </li>
+    {% endif %}
+    {% endfor %}
+    </td>
+    <td>{{ datas.total_price }}</td>
+    <td><ol>{{ datas.user_id.fname }} {{ datas.user_id.lname }}</ol>
+    <ol>{{datas.user_id.address}}</ol>
+    </td>
+    
+</tr>
+{% endfor %}
+</tbody>
+</table>
+    </div>
+     <p class="text-center">{% now 'd-m-Y'%}</p>
+</div>
+</div>
+{% endif %}
+        <main class="{% if data is not None %} col-lg-5 {% else %} col-lg-8 {% endif %}">
+            {% if food_items is not None %}
+            <div class="card shadow">
+                <form id="form_data">
+                {% csrf_token %}
+                    <table class="table table-borderless">
+                        <thead class="card-header text-white bg-primary">
+                            <tr class="small text-uppercase">
+                                <th scope="col">Product</th>
+                                <th scope="col" width="120">Quantity</th>
+                                <th scope="col" width="120">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for food in food_items %}
+                            <tr>
+                                <td>
+                                    <figure class="itemside">
+                                        <figcaption class="info">
+                                            <a href="#" class="title font-weight-bold text-dark">{{ food.item_name }}</a>
+                                            <p class="text-muted small">{{ food.item_description }}</p>
+                                        </figcaption>
+                                    </figure>
+                                </td>
+                                <td>
+                                    {% if food.item_qty > 0 %}
+                                    <input type="hidden" name="{{ food.item_id }}_id" value="{{ food.item_id }}">
+                                    <select name="{{ food.item_id }}_qty"
+                                        onchange="$('#food{{ food.item_id }}totel').text(parseInt(this.value)*parseInt($('#food{{ food.item_id }}price').text()))"
+                                        class="form-control">
+                                        <option select readonly>0</option>
+                                        {% if food.item_qty >= 5 %}
+                                        {% for i in '12345'|make_list %}
+                                        <option>{{ forloop.counter }}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                        {% if food.item_qty == 4 %}
+                                        {% for i in '1234'|make_list %}
+                                        <option>{{ forloop.counter }}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                        {% if food.item_qty == 3 %}
+                                        {% for i in '123'|make_list %}
+                                        <option>{{ forloop.counter }}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                        {% if food.item_qty == 2 %}
+                                        {% for i in '12'|make_list %}
+                                        <option>{{ forloop.counter }}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                        {% if food.item_qty == 1 %}
+                                        {% for i in '1'|make_list %}
+                                        <option>{{ forloop.counter }}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    <p class="text-muted small">left: {{ food.item_qty }}
+                                    </p>
+                                    {% else %}
+                                    No Stock Please Contact
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="price-wrap">
+                                        <var class="price">&#8377;<span
+                                                id="food{{ food.item_id }}totel">0<span></var><br>
+                                        <small class="text-muted">&#8377;<span
+                                                id="food{{ food.item_id }}price">{{ food.item_price}} each</small>
+                                    </div> <!-- price-wrap .// -->
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+                <div class="card-body border-top">
+                    <button class="btn btn-primary float-md-right" onclick="confirmorder()"> Make Order <i
+                            class="fa fa-chevron-right"></i> </button>
+                </div>
+
+            </div> <!-- card.// -->
+
+
+            <div class="alert alert-success mt-3">
+                <p class="icontext"><i class="icon text-success fa fa-truck"></i> Delivery within 1-2 hours</p>
+            </div>
+            {% else %}
+            <div class="alert alert-danger"> 
+            {% autoescape off %}
+            {{message}} 
+            {% endautoescape %}</div>
+            {% endif %}
+
+        </main> <!-- col.// -->
+    </div>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+
+    <div class="modal" tabindex="-1" role="dialog" id="confirmfoodordermodal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Food Order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div  class="modalbody">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    function confirmorder() {
+        var form_data = 0
+        form_data = $('#form_data').serialize();
+        $("#confirmfoodordermodal").modal('show');
+        $("#confirmfoodordermodal .modalbody").html('<div class="modal-body">Loading...</div><div class="modal-footer"></div>');
+
+        $.ajax({
+           type: "POST",
+           url: '/portal/q/orderfood',
+           cache:false,
+           data: form_data,
+           success:function(data){
+               $("#confirmfoodordermodal .modalbody").html(data);
+               },
+            error:function(data){
+                $("#confirmfoodordermodal .modal-body").html(data.statusText);
+            }
+        });
+    }
+
+    $(document).ready(function(){
+        $("#confirmfoodordermodal").modal({
+            keboard: false,
+            backdrop: 'static',
+            show: false
+        });
+    });
+</script>
+
+
+{% endblock %}
