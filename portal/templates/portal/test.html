@@ -1,0 +1,71 @@
+{% extends 'portal_base.html' %}
+{% block title %}PROBABILITY TEST {% endblock title %}
+{% block content %}
+
+
+      <div class="container">
+      <div class="row justify-content-center">
+      <div class="card col=m-8">
+      <div class="card-header">
+          <h2 class="text-center mt-3 card-title">Corona Detector</h2>
+    </div>
+    <div class="card-body">
+          <form action="/portal/q/gettestresult" method="POST" >
+          {% csrf_token %}  
+            <div class="form-group">
+                <label for="nose">Have you travelled anywhere internationally in the last 14-days?</label>
+                <select class="form-control custom-select" id="travel" name="travel">
+                  <option value="0">No</option>
+                  <option value="1">Yes</option>
+                </select>
+              </div>
+            <div class="form-group">
+              <label for="fever">Enter your Body Temprature</label>
+              <input type="text" class="form-control" id="fever" name="fever" placeholder="Enter temperature">
+            </div>
+            <div class="form-group">
+                <label for="age">Enter Your Age</label>
+                <input type="text" class="form-control" id="age" name="age" placeholder="Enter Your Age">
+              </div>
+            <div class="form-group">
+              <label for="pain">Are you feeling Body Pain or not?</label>
+              <select class="form-control custom-select" id="pain" name="pain">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+            <div class="form-group">
+                <label for="nose">Runny Nose or not?</label>
+                <select class="form-control custom-select" id="nose" name="nose">
+                  <option value="0">No</option>
+                  <option value="1">Yes</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="breath">Do you have any Breathing Difficulty?</label>
+                <select class="form-control custom-select" id="breath" name="breath">
+                    <option value="-1">No Difficulty</option>
+                    <option value="0">Little Difficulty</option>
+                    <option value="1">Severe Difficulty</option>
+                </select>
+              </div> 
+                <div class="form-group">
+                <label for="nose">Have you ever had any other diseases?</label>
+                <select class="form-control custom-select" id="other" name="other">
+                  <option value="0">No</option>
+                  <option value="1">Yes</option>
+                </select>
+              </div>
+               <div class="form-group">
+                <label for="nose">If yes, Mention the disease.</label>
+                <textarea class="form-control " id="disease" name="disease">
+                </textarea>
+              </div>
+            <button class="btn btn-success"> Submit</button>
+          </form>
+          </div>
+      </div>
+      </div>
+      </div>
+
+{% endblock content %}

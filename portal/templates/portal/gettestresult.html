@@ -1,0 +1,13 @@
+{% extends 'portal_base.html' %}
+{% block title %}PROBABILITY TEST RESULT {% endblock title %}
+{% block content %}
+
+  <div class="container">
+          <h2 class="text-center mt-3">Corona Detector</h2>
+          <p>Your Probability of Infection is  {{result}}%</p>
+          <a href="/portal/q/test">
+        class="btn btn-success my-2 my-sm-0" type="submit">Test Again</a>
+          
+      </div>
+
+{% endblock content %}

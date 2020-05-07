@@ -62,3 +62,18 @@ class foods_order(models.Model):
     def __str__(self):
         return "%s - %s %s %s" %(self.order_id,self.order_date,self.user_id,self.uid)
 
+class Test_Result(models.Model):
+    user_id = models.ForeignKey(Portal_user_profile,on_delete=models.CASCADE)
+    localbody = models.ForeignKey(official_athorities_list,on_delete=models.CASCADE,null=True)
+    test_date = models.TextField(null=True)
+    fever = models.IntegerField(default=0)
+    pain = models.IntegerField(default=0)
+    age = models.IntegerField(default=0)
+    nose = models.IntegerField(default=0)
+    breath = models.IntegerField(default=0)
+    travel = models.IntegerField(default=0)
+    other = models.IntegerField(default=0)
+    disease = models.TextField(max_length=32)
+    result = models.TextField(default="0")
+    def __str__(self):
+        return ("%s - %s : %s "%(self.user_id,self.test_date,self.localbody))

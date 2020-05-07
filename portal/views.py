@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse,redirect
-from .models import Portal_user,Portal_user_profile,food_item,foods_order,food_item_list_in_orders
+from .models import Portal_user,Portal_user_profile,food_item,foods_order,food_item_list_in_orders,Test_Result
 from portal_official.models import official_athorities_list
 from random import randint
 from datetime import datetime,timedelta
@@ -144,7 +144,7 @@ def queries(request,query='profile'):
                     now = datetime.now()
                     f_items = food_item.objects.filter(localbody = currentlb.localbody,item_date = now.strftime("%Y-%m-%d"))
                     foodorderedlist = food_item_list_in_orders.objects.filter(user=login)
-                    qfoodorders = foods_order.objects.filter(user_id=currentlb)
+                    qfoodorders = foods_order.objects.filter(user_id=currentlb,order_date = now.strftime("%Y-%m-%d"))
                     message = "<strong>No Item Found in %s %s Kitchen </strong> <br> Conatct Authority : %s - %s "%(currentlb.localbody.localbody_name,currentlb.localbody.localbody_type,currentlb.localbody.localbody_admin.contact_person,currentlb.localbody.localbody_admin.contact_no)
                     if f_items.count() == 0:
                         f_items = None
@@ -234,6 +234,50 @@ def queries(request,query='profile'):
                 except AssertionError :
                     pass
                 return  HttpResponse("<script>alert('Order Sucess'); window.location = '/portal/q/kitchen';</script>") 
+            elif query == 'test':
+                return render(request,'portal/test.html')
+            elif query == 'gettestresult':
+                if request.POST:
+                    try:
+                        login = request.session['login']
+                        current_user = Portal_user_profile.objects.get(login = login)
+                        now = datetime.now()
+
+                        travel = int(request.POST['travel'])
+                        fever = int(request.POST['fever'])
+                        age = int(request.POST['age'])
+                        pain = int(request.POST['pain'])
+                        nose = int(request.POST['nose'])
+                        breath = int(request.POST['breath'])
+                        other = int(request.POST['other'])
+
+                        import pickle
+                        file = open('model.pkl', 'rb')
+                        model = pickle.load(file)
+                        file.close()
+                        test_result=model.predict_proba([[fever,pain,age,nose,breath,breath,other]])
+                        result = float(test_result[0][1])*100
+                        result = round(result,2)
+                        Test_Result(user_id = current_user,
+                        localbody = current_user.localbody,
+                        test_date = now.strftime("%Y-%m-%d"),
+                        fever = fever,
+                        age = age,
+                        pain = pain,
+                        nose = nose,
+                        breath = breath,
+                        travel = travel,
+                        other = other,
+                        disease = request.POST['disease'],
+                        result = result
+                         ).save()
+                        
+
+                    except AssertionError as Error:
+                        return HttpResponse(Error)
+                else:
+                    return HttpResponse("Errir in PoSt")
+                return render(request,'portal/gettestresult.html',{'result':result})
             else:
                 return render(request,'portal/404.html')
             #------------------------------------------------------------
