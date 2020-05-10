@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from project_admin.models import Global_variable as gvar
 from .models import official_athorities_list, official_user
-from portal.models import Portal_user_profile, food_item,food_item_list_in_orders,foods_order
+from portal.models import Portal_user_profile, food_item,food_item_list_in_orders,foods_order,Test_Result
 import hashlib,datetime
 # Create your views here.
 
@@ -309,3 +309,50 @@ def signup(request):
             return HttpResponse(result)
     else:
         return render(request, 'po_signup.html', {})
+
+
+def testresult(request):
+    if not request.session.has_key('official'):
+        return redirect('/portal_official/login')
+    else:
+        try:
+            dated = request.GET['date'] 
+        except:
+            now = datetime.datetime.now()
+            dated = now.strftime("%Y-%m-%d")
+        try:
+            currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+            testresults = Test_Result.objects.filter(localbody=currentlb)
+        except AssertionError:
+            pass
+        return render(request, 'po_testresult.html',{'data':testresults})
+
+
+def usertestresultprofile(request):
+    html = """ <table class="table table-responsive table-bordered"> """
+    login = request.GET['login']
+    userdata = Portal_user_profile.objects.get(login=login)
+    currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+    testresults = Test_Result.objects.filter(localbody=currentlb,user_id=userdata)
+    html += """  <tr><th class="col">Name</th><td class="col">%s %s</td></tr> """ % (
+        userdata.fname, userdata.lname)
+    html += """  <tr><th>Email</th><td>%s</td></tr> """ % (userdata.email)
+    html += """  <tr><th>Phone Number</th><td>%s</td></tr> """ % (
+        userdata.login)
+    html += """  <tr><th>Alternate Number</th><td>%s</td></tr> """ % (
+        userdata.altno)
+    html += """  <tr><th>Address</th><td>%s</td></tr> """ % (userdata.address)
+    html += """  <tr><th>Place</th><td>%s</td></tr> """ % (userdata.place)
+    html += """  <tr><th>City</th><td>%s</td></tr> """ % (userdata.city)
+    html += """  <tr><th>PIN code</th><td>%s</td></tr> """ % (userdata.pincode)
+
+    html += """</table><script>$(document).ready(function(){$("#ProfileViewModalLabel").text("%s`s Profile");});</script>""" % (
+        userdata.fname)
+    html += """ <table class="table table-bordered"> <tr><th>Date</th><th>Body Temperature</th><th>Probability(%)</th></tr>""" 
+    for data in testresults:
+        html += """ <tr><td>%s</td><td>%s</td><td>%s</td></tr>""" % (data.test_date,data.fever,data.result)
+    html += """ </table>""" 
+    return HttpResponse(html)
+
+
+

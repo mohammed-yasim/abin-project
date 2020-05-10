@@ -13,6 +13,8 @@ urlpatterns = [
     path('userprofile',po_view.userprofile),
     path('kitchen',po_view.kitchen),
     path('kitchen_orders',po_view.kitchen_orders),
-    path('kitchen_process',po_view.kitchen_process)
+    path('kitchen_process',po_view.kitchen_process),
+    path('testresult',po_view.testresult),
+    path('usertestresultprofile',po_view.usertestresultprofile)
 
 ]
