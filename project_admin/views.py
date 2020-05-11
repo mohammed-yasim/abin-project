@@ -12,9 +12,9 @@ def api(requests, query=''):
         try:
             key = requests.GET['key']
             print("key",key)
-            queryset = Global_variable.objects.filter(var_name = query,var_key = key)
+            queryset = Global_variable.objects.filter(var_name = query,var_key = key).order_by('var_data')
         except:
-            queryset = Global_variable.objects.filter(var_name = query,key="*")
+            queryset = Global_variable.objects.filter(var_name = query,key="*").order_by('var_data')
         if(queryset.count() >= 1):
             post_liste = serializers.serialize('json', queryset)
             var_list = []

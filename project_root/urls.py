@@ -3,6 +3,9 @@ from django.urls import path,re_path
 from django.conf.urls import url,include
 from project_admin.views import api
 from project_admin.views import profile_api
+admin.site.site_header = "Break The Chain"
+admin.site.site_title = "Break The Chain"
+admin.site.index_title = "Welcome to Break The Chain Dashboard"
 
 urlpatterns = [
     url(r'^',include('home.urls')),

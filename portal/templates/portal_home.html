@@ -1,4 +1,5 @@
 {% extends 'auth_base.html' %}
+{% load static %}
 {% block title %} Helping Hands {% endblock title %}
 {% block content %}
 <style>
@@ -150,10 +151,17 @@ padding-bottom:20px;
             <div class="row mb-5">
                 <div class="col-lg-6 justify-content-center">
                     
-                    <img src="/static/portal/rc.jpg" class="img-fluid my-auto" width="150px">
+                    <img src="{% static 'portal/rc.jpg' %}" class="img-fluid my-auto" width="150px">
                     
-                    
-                  
+                    <h5> The novel coronavirus is a recently emerged human pathogen that has spread widely since December 2019. </h5>
+                    <p class="text-justify"> &nbsp; &nbsp; Our objective  is to motivate the public people to use the web application to find their
+                    (self-assess) probability to be affected by the disease. And also,
+                    it helps to communicate with the community kitchen and Needhi medical shop to avail,
+                     needed food and medicines.</p>
+                     <p class="text-justify"> &nbsp; &nbsp; We allows the users to check their probability of infection with
+                      automated and evidence-based self-assessment. Public users get their real-time evaluation by analyzing 
+                      simple details such as users body temperature, 
+                     body pain, breathing conditions, recent travel history and more</p>
                 </div>
                 <div class="col-lg-6">
                    <div class="fadeIn first">

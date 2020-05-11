@@ -2,12 +2,33 @@
 {% block title %}PROBABILITY TEST RESULT {% endblock title %}
 {% block content %}
 
-  <div class="container">
-          <h2 class="text-center mt-3">Corona Detector</h2>
-          <p>Your Probability of Infection is  {{result}}%</p>
-          <a href="/portal/q/test">
-        class="btn btn-success my-2 my-sm-0" type="submit">Test Again</a>
-          
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title text-center mt-3">Corona Detector</h2>
+        </div>
+        <div class="card-body">
+          <p>Your Probability of Infection is {{result}}%</p>
+          {% if result > 70 %}
+          <span class="text-danger">You have a High Risk. Consult the nearby medical centre</span> 
+          {% elif result > 40 %}
+          <span class="text-warning">You have a Medium Risk. Please stay in your home</span> 
+          {% else %}
+          <span class="text-success">You have a Low Risk. Please stay in your home</span>
+          {% endif %}
+        </div>
+        <div class="card-footer">
+          <a href="/portal/q/test" class="btn btn-primary my-2 my-sm-0" type="submit">Test Again</a>
+        </div>
       </div>
+      <p  class="p-3 text-danger">NB:The Result you get form the above test is based on a collected data</p>  
+    </div>
+  </div>
+
+
+
+</div>
 
 {% endblock content %}

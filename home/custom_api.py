@@ -53,7 +53,7 @@ def get_status(requset):
         table = tabulate(objects, headers=SHORT_HEADERS,tablefmt='html')
         print('status!')
         newsdata += """<div class="col-lg-8 col-md-8 col-sm-10" id="status">
-        <h2>Covid 19 Report</h2>
+        <h2 class="text-center">Covid 19 Current Stats</h2>
         %s
         <script>
         $(document).ready(function(){

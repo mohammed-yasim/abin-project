@@ -107,9 +107,9 @@ PROJECT_NAME = 'Break The Chain'
 PROJECT_NAME_A = 'BREAK THE CHAIN'
 PROJECT_NAME_B = 'break the chain'
 
-PORTAL_NAME = 'Mithra Portal'
-PORTAL_NAME_A = 'MITHRA PORTAL'
-PORTAL_NAME_B = 'mithra portal'
+PORTAL_NAME = 'Mithri Portal'
+PORTAL_NAME_A = 'MITHRI PORTAL'
+PORTAL_NAME_B = 'mithri portal'
 
 SETTINGS_EXPORT = [
     'PROJECT_NAME',

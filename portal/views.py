@@ -258,20 +258,29 @@ def queries(request,query='profile'):
                         test_result=model.predict_proba([[fever,pain,age,nose,breath,breath,other]])
                         result = float(test_result[0][1])*100
                         result = round(result,2)
-                        Test_Result(user_id = current_user,
-                        localbody = current_user.localbody,
-                        test_date = now.strftime("%Y-%m-%d"),
-                        fever = fever,
-                        age = age,
-                        pain = pain,
-                        nose = nose,
-                        breath = breath,
-                        travel = travel,
-                        other = other,
-                        disease = request.POST['disease'],
-                        result = result
-                         ).save()
-                        
+                        try:
+                            temporarytoken = request.session['covidtemporarytoken']
+                        except:
+                            temporarytoken = 'unknown'
+                            
+                        if request.POST['csrfmiddlewaretoken'] != temporarytoken:
+
+                            Test_Result(user_id = current_user,
+                            localbody = current_user.localbody,
+                            test_date = now.strftime("%Y-%m-%d"),
+                            fever = fever,
+                            age = age,
+                            pain = pain,
+                            nose = nose,
+                            breath = breath,
+                            travel = travel,
+                            other = other,
+                            disease = request.POST['disease'],
+                            result = result
+                            ).save()
+                            request.session['covidtemporarytoken'] = request.POST['csrfmiddlewaretoken']
+                        else:
+                            print("Data exist")    
 
                     except AssertionError as Error:
                         return HttpResponse(Error)
@@ -301,7 +310,7 @@ def auth(request):
             login_object = Portal_user.objects.get(login=login)
         db_otp = str(login_object.otp)
         try:
-            notification.notify(app_name='PY_SERVER',title='PY_SERVER',message=r'OTP is %s valid for 5 mins'%(db_otp),app_icon=None,timeout=15)
+            notification.notify(app_name='Break The Chain',title='Mithri Portal',message=r'OTP is %s valid for 5 mins'%(db_otp),app_icon=None,timeout=15)
         except:
             print(db_otp)
         return render(request,'auth_otp.html',{"login":login})
@@ -316,7 +325,7 @@ def auth(request):
             return redirect('/portal')
         else:
             try:
-                notification.notify(app_name='PY_SERVER',title='PY_SERVER',message=r'OTP is %s valid for 5 mins'%(db_otp),app_icon=None,timeout=15)
+                notification.notify(app_name='Break The Chain',title='Mithri Portal',message=r'OTP is %s valid for 5 mins'%(db_otp),app_icon=None,timeout=15)
             except:
                 print(db_otp)
             return render(request,'auth_otp.html',{"login":login,'error':error_template})
