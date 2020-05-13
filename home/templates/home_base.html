@@ -46,7 +46,7 @@
                             <a class="nav-link" href="/index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/about.html">About</a>
+                            <a class="nav-link" href="/about.html">Awareness</a>
                         </li>
                      <!--  <li class="nav-item">
                             <a class="nav-link disabled" href="#">News</a>
@@ -89,7 +89,7 @@
     <script src="{% static 'js/news.js' %}"></script>
     <script>
     $(window).on('load', function() {
-        $('#newsTicker1 ul').load("newsapi.org", function( response, status, xhr ) {
+        $('#newsTicker1 ul').load("/newsapi.org", function( response, status, xhr ) {
             if ( status == "error" ) {
                 $('#newsTicker1Box').fadeOut();
             }

@@ -1,9 +1,9 @@
 
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = 'di5u4_#*nay@**almt6!8ss6m^)fm0q*1^mh8*yc@^93d4_ndu'
+SECRET_KEY = 'o2t^dm(n^vsf865ff-dn5at(4h&1yxy%&g+4#z@5p7-$b3i+ch'
 DEBUG = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','Breakthechain.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -99,17 +99,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 PROJECT_NAME = 'Break The Chain'
 PROJECT_NAME_A = 'BREAK THE CHAIN'
 PROJECT_NAME_B = 'break the chain'
 
-PORTAL_NAME = 'Mithri Portal'
-PORTAL_NAME_A = 'MITHRI PORTAL'
-PORTAL_NAME_B = 'mithri portal'
+PORTAL_NAME = 'Mythri Portal'
+PORTAL_NAME_A = 'MYTHRI PORTAL'
+PORTAL_NAME_B = 'mythri portal'
 
 SETTINGS_EXPORT = [
     'PROJECT_NAME',
@@ -119,3 +117,16 @@ SETTINGS_EXPORT = [
     'PORTAL_NAME_A',
     'PORTAL_NAME_B',
 ]
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+STATIC_URL = '/static/'
+
+# default static files settings for PythonAnywhere.
+# see https://help.pythonanywhere.com/pages/DjangoStaticFiles for more info
+MEDIA_ROOT = '/home/Breakthechain/media'
+MEDIA_URL = '/media/'
+STATIC_ROOT = '/home/Breakthechain/static'
+STATIC_URL = '/static/'
