@@ -1,0 +1,59 @@
+{% extends 'po_base.html' %}
+{% block title %}MEDICARE {% endblock title %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header  bg-warning">
+                <h2 class="header-title text-white">Add Medicines to Stock</h2>
+            </div>
+            <div class="card-body">
+                {% if status %}
+                {% autoescape off %}
+                    {{status}}
+                    {% endautoescape %}
+                {% endif %}
+                <form method="POST" action="/portal_official/med_save_update?medicineid={{medicine.medicine_id}}">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <label for="medicine_name">Medicine<span class="text-danger">*</span></label>
+                        <input required type="text" class="form-control" id="medicine_name" name="medicine_name" value="{{medicine.medicine_name}}"
+                            placeholder="Medicine Name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medicine_qty">Quantity Type<span class="text-danger">*</span></label>
+                        <select required class="form-control" id="quantity_type" name="quantity_type">
+                        <option selected>{{medicine.quantity_type}}</option>
+                        <option >Strip</option>
+                        <option >Pcs</option>
+                        <option >Bottle</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="medicine_qty">Quantity<span class="text-danger">*</span></label>
+                        <input required type="text" class="form-control" id="medicine_qty" name="medicine_qty" value="{{medicine.medicine_qty}}"
+                            placeholder="Medicine available quantity" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  size="3" maxlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="medicine_price">Medicine Price<span class="text-danger">*</span></label>
+                        <input required type="text" class="form-control" id="medicine_price" name="medicine_price" value="{{medicine.medicine_price}}"
+                            placeholder="Price for medicine" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  size="3" maxlength="3">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Update </button>
+                        <a class="btn btn-warning" href="/portal_official/medicine">Back</a>
+                   </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
+{% block script %}
+
+{% endblock script %}

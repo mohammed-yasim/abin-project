@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from project_admin.models import Global_variable as gvar
 from .models import official_athorities_list, official_user
-from portal.models import Portal_user_profile, food_item,food_item_list_in_orders,foods_order,Test_Result
+from portal.models import Portal_user_profile, food_item,food_item_list_in_orders,foods_order,Test_Result,Medicine_list,medicine_item_list_in_orders,Medicine_order
 import hashlib,datetime
 # Create your views here.
 
@@ -355,4 +355,91 @@ def usertestresultprofile(request):
     return HttpResponse(html)
 
 
+# -----------------------------------------
+# @@@@@@@@@
+# MEDICINE
+# @@@@@@@@@
+# -----------------------------------------
+
+
+def medicine(request):
+    if not request.session.has_key('official'):
+        return redirect('/portal_official/login')
+    else:
+        currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+        med = Medicine_list.objects.filter(localbody = currentlb,deleted = False)
+
+        return render(request, 'po_medicine.html',{'medicines':med})
+
+
+def addmedicine(request):
+    if not request.session.has_key('official'):
+        return redirect('/portal_official/login')
+    else:
+        html = False 
+        if request.POST:
+
+            if request.session.get('medicine_crsftoken') != request.POST['csrfmiddlewaretoken']:
+                try:
+                    currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+                    medicine_name = request.POST['medicine_name']
+                    medicine_price = request.POST['medicine_price']
+                    medicine_qty = request.POST['medicine_qty']
+                    quantity_type = request.POST['quantity_type']
+
+                    Medicine_list(
+                        medicine_name=medicine_name,
+                        medicine_price=float(medicine_price),
+                        medicine_qty=int(medicine_qty),
+                        quantity_type=quantity_type,
+                        localbody=currentlb
+                    ).save()
+                    request.session['medicine_crsftoken']=request.POST['csrfmiddlewaretoken']
+                    html = """ <div class="alert alert-success">Medicine Added Successfully</div> """
+                except:
+                    html = """ <div class="alert alert-danger">Not successfull</div>"""
+            else:
+                html = """ <div class="alert alert-warning">Duplicate Token <a href="addmedicine">Reset</a></div> """
+        else:
+            try:
+                del request.session['medicine_crsftoken']
+            except:
+                pass
+        return render(request, 'po_addmedicine.html',{'status':html})
+
+def medicine_deleted(request):
+    try:
+        currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+        delfield = Medicine_list.objects.get(localbody =currentlb,medicine_id = request.GET['medicineid'])
+        delfield.deleted=True
+        delfield.save()
+        html = """ <script> alert("Medicine Deleted"); window.location='/portal_official/medicine'; </script> """
+        return HttpResponse(html)
+    except:
+       html = """ <script> alert("Error occured");window.location='/portal_official/medicine'; </script> """ 
+       return HttpResponse(html) 
+
+def med_save_update(request):
+    try:
+        currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+        updatefield = Medicine_list.objects.get(localbody =currentlb,medicine_id = request.GET['medicineid'])
+        updatefield.medicine_name = request.POST['medicine_name']
+        updatefield.medicine_price = request.POST['medicine_price']
+        updatefield.medicine_qty = request.POST['medicine_qty']
+        updatefield.quantity_type = request.POST['quantity_type']
+        updatefield.save()
+        html = """ <script> alert("Medicine Updated"); window.location='/portal_official/medicine'; </script> """
+        return HttpResponse(html)
+    except:
+       html = """ <script> alert("Error occured");window.location='/portal_official/medicine'; </script> """ 
+       return HttpResponse(html)
+
+def medicine_update(request):
+    if not request.session.has_key('official'):
+        return redirect('/portal_official/login')
+    else:
+        currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+        med = Medicine_list.objects.get(localbody = currentlb,medicine_id = request.GET['medicineid'])
+
+        return render(request, 'po_medicine_update.html',{'medicine':med})
 

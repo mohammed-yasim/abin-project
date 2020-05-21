@@ -15,6 +15,12 @@ urlpatterns = [
     path('kitchen_orders',po_view.kitchen_orders),
     path('kitchen_process',po_view.kitchen_process),
     path('testresult',po_view.testresult),
-    path('usertestresultprofile',po_view.usertestresultprofile)
+    path('usertestresultprofile',po_view.usertestresultprofile),
+    path('medicine',po_view.medicine),
+    path('addmedicine',po_view.addmedicine),
+    path('medicine_deleted',po_view.medicine_deleted),
+    path('medicine_update',po_view.medicine_update),
+    path('med_save_update',po_view.med_save_update)
+
 
 ]

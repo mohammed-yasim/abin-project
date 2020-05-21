@@ -77,3 +77,35 @@ class Test_Result(models.Model):
     result = models.TextField(default="0")
     def __str__(self):
         return ("%s - %s : %s "%(self.user_id,self.test_date,self.localbody))
+
+
+class Medicine_list(models.Model):
+    medicine_id = models.AutoField(primary_key=True)
+    medicine_name = models.CharField(max_length=32)
+    medicine_price = models.FloatField()
+    medicine_qty = models.IntegerField(default=0)
+    quantity_type = models.CharField(max_length=32,default="Strip")
+    localbody = models.ForeignKey(official_athorities_list,on_delete=models.CASCADE,null=True)
+    deleted = models.BooleanField(default=False)
+    def __str__(self):
+        return ("%s - %s "%(self.medicine_name,self.localbody))
+
+class medicine_item_list_in_orders(models.Model):
+    medicine_id = models.ForeignKey(food_item,on_delete=models.CASCADE)
+    medicine_qty = models.IntegerField()
+    uid = models.TextField(default="0")
+    def __str__(self):
+        return "(%s) %s - %s" %(self.medicine_qty,self.medicine_id,self.uid)
+
+class Medicine_order(models.Model):
+    med_order_id = models.AutoField(primary_key=True)
+    order_date = models.TextField(null=True)
+    total_price = models.FloatField()
+    user_id = models.ForeignKey(Portal_user_profile,on_delete=models.CASCADE)
+    localbody = models.ForeignKey(official_athorities_list,on_delete=models.CASCADE,null=True)
+    status = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
+    uid = models.TextField(default="0")
+    def __str__(self):
+        return "%s - %s %s %s" %(self.med_order_id,self.order_date,self.user_id,self.uid)
+
