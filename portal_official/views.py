@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from project_admin.models import Global_variable as gvar
 from .models import official_athorities_list, official_user
-from portal.models import Portal_user_profile, food_item,food_item_list_in_orders,foods_order,Test_Result,Medicine_list,medicine_item_list_in_orders,Medicine_order
+from portal.models import Portal_user_profile, food_item,food_item_list_in_orders,foods_order,Test_Result,Medicine_list,Medicare_order
 import hashlib,datetime
 # Create your views here.
 
@@ -443,3 +443,11 @@ def medicine_update(request):
 
         return render(request, 'po_medicine_update.html',{'medicine':med})
 
+def mediorders(request):
+    if not request.session.has_key('official'):
+        return redirect('/portal_official/login')
+    else:
+        currentlb = official_athorities_list.objects.get(localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+        medorders = Medicare_order.objects.filter(localbody = currentlb)
+        
+        return render(request, 'po_mediorders.html',{'medorder':medorders})

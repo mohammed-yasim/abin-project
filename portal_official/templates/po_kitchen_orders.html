@@ -17,8 +17,8 @@
 <th>Order ID</th>
 <th>Items</th>
 <th>Price</th>
-<th>Adress</th>
-<th>Actions</th>
+<th>Address</th>
+<th>Payment Status</th>
 
 </tr>
 <tbody>
@@ -36,10 +36,17 @@
     {% endfor %}
     </td>
     <td>{{ datas.total_price }}</td>
-    <td><ol>{{ datas.user_id.fname }} {{ datas.user_id.lname }}</ol>
-    <ol>{{datas.user_id.address}}</ol>
-    </td>
+    <td>{{ datas.user_id.fname }} {{ datas.user_id.lname }}<br/>
+    {{datas.user_id.address}}<br/>
+    {{datas.user_id.place}}, 
+    {{datas.user_id.city}}<br/>
     
+    </td>
+    <td class="text-center"> {% if datas.confirmed == True %}
+                            <button disabled class="btn btn-sm btn-success ">Paid</button>
+                            {% else %}
+                            <span class="text-danger">Not Paid</span>
+                            {% endif %} </td>
 </tr>
 {% endfor %}
 </tbody>

@@ -1,0 +1,52 @@
+{% extends 'po_base.html' %}
+{% block title %}MEDICARE {% endblock title %}
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-10 ">
+        <div class="card">
+            <div class="card-header  bg-primary">
+                <h2 class="header-title text-white">Medicine Orders</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Address</th>
+                            <th>Order Date</th>
+                            <th>Quantity Ordered</th>
+                            <th>Total Price</th>
+                            <th>Payment Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for medicine in medorder %}
+                        <tr>
+                            <td>{{medicine.medicine_id.medicine_name}}</td>
+                            <td>{{medicine.user_id.fname}} {{medicine.user_id.lname}} <br> {{medicine.user_id.address}} <br>
+                             {{medicine.user_id.place}}, {{medicine.user_id.city}} </td>
+                            <td>{{medicine.order_date}} </td>
+                            <td>{{medicine.medicine_qty}} {{medicine.medicine_id.quantity_type}}</td>
+                            <td>{{medicine.total_price}} </td>
+
+                            <td class="text-center"> {% if medicine.confirmed == True %}
+                            <button disabled class="btn btn-sm btn-success ">Paid</button>
+                            {% else %}
+                            <span class="text-danger">Not Paid</span>
+                            {% endif %} </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

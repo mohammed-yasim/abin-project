@@ -1,0 +1,57 @@
+{% extends 'portal_base.html' %}
+
+{% block title %}Order Medicine {% endblock title %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center text-white bg-primary">
+                <h5 class="card-title"> Order <span style="color:orange"> {{medicine.medicine_name}} </span></h5>
+
+            </div>
+            <div class="card-body">
+                
+                <form method="POST" action="/portal/q/confirmmediorder">
+                    {% csrf_token %}
+                    <input type="hidden" name="mediid" value="{{medicine.medicine_id}}">
+                    
+                    <div class="form-group">
+                        <label for="medprice" >Price </label>
+                        <input class="form-control" readonly type="text" id="medprice" value=" {{medicine.medicine_price}}" >
+                    </div>
+                    <div class="form-group">
+                        <label for="mediqty" >Select No of {{medicine.quantity_type}}</label>
+                        <select class="form-control" name="mediqty" id="mediqty" required onchange="medtotalcal(this)">
+                            <option selected disabled>Choose</option>
+                            <option>1</option>
+                            <option>2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="medtotal" >Total Price :</label>
+                        <input class="form-control" readonly  type="text" id="medtotal" value="" >
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" value="submit"> Order</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+    function medtotalcal(quantity_ele){
+        a=$(quantity_ele).val();
+        b=$('#medprice').val();
+        $('#medtotal').val(a*b);
+    }
+
+</script>
+  
+{% endblock script %}

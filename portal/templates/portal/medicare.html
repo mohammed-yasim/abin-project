@@ -1,0 +1,93 @@
+{% extends 'portal_base.html' %}
+{% block title %}MEDICARE {% endblock title %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header  bg-primary">
+                <h2 class="header-title text-white">Available Medicines</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered" id="medicineTable">
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Medicine Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for medicine in medicines %}
+                        <tr class="{% if medicine.medicine_qty == 0 %} bg-warning text-dark {% endif %}">
+                            <td>{{medicine.medicine_name}}</td>
+                            <td>{{medicine.medicine_price}} per {{medicine.quantity_type}}</td>
+                            <td class="text-center">
+
+                                <div class=""><a class="btn btn-success btn-sm"
+                                        href="/portal/q/mediorder?medicineid={{medicine.medicine_id}}"><i
+                                            class="fa fa-truck"></i> Buy Now</a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-10 mt-4">
+        <div class="card">
+            <div class="card-header  bg-primary">
+                <h2 class="header-title text-white">My Orders</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered" id="medicineTable">
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Order Date</th>
+                            <th>Quantity Ordered</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for medicine in orders %}
+                        <tr>
+                            <td>{{medicine.medicine_id.medicine_name}}</td>
+                            <td>{{medicine.order_date}} </td>
+                            <td>{{medicine.medicine_qty}} {{medicine.medicine_id.quantity_type}}</td>
+                            <td>{{medicine.total_price}} </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block script %}
+{% load static %}
+<script src="{% static 'sb/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'sb/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<script>
+    // Call the dataTables jQuery plugin
+    $(document).ready(function () {
+        $('#medicineTable').DataTable();
+    });
+
+</script>
+
+
+{% endblock script %}

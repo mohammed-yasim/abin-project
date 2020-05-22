@@ -17,6 +17,9 @@
         <link href="{% static 'portal/css/datatable.css' %}" rel="stylesheet"/>
         <script src="{% static 'js/jquery.min.js' %}"></script>
         <link href="{% static 'sb/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+        <style>
+            ::-webkit-scrollbar{display:none;}
+        </style>
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -62,12 +65,13 @@
                             <a class="nav-link" href="/portal/q/test"
                                 ><div class="sb-nav-link-icon"><i class="fas fa-medkit"></i></div>
                                 Test Corona</a>
-                            <div class="text-center text-danger">Comming Soon</div>    
                             <a class="nav-link" href="/portal/q/medicare"
                                 ><div class="sb-nav-link-icon"><i class="fas fa-medkit"></i></div>
                                 Medicare</a>
+
+                            <div class="text-center text-danger">Comming Soon</div>    
                             
-                            <a class="nav-link" href="/portal/q/medicare"
+                            <a class="nav-link disabled" href=""
                                 ><div class="sb-nav-link-icon"><i class="fas fa-medkit"></i></div>
                                 Request Help</a>
                             

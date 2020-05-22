@@ -90,15 +90,11 @@ class Medicine_list(models.Model):
     def __str__(self):
         return ("%s - %s "%(self.medicine_name,self.localbody))
 
-class medicine_item_list_in_orders(models.Model):
-    medicine_id = models.ForeignKey(food_item,on_delete=models.CASCADE)
-    medicine_qty = models.IntegerField()
-    uid = models.TextField(default="0")
-    def __str__(self):
-        return "(%s) %s - %s" %(self.medicine_qty,self.medicine_id,self.uid)
 
-class Medicine_order(models.Model):
+class Medicare_order(models.Model):
     med_order_id = models.AutoField(primary_key=True)
+    medicine_id = models.ForeignKey(Medicine_list,on_delete=models.CASCADE)
+    medicine_qty = models.IntegerField()
     order_date = models.TextField(null=True)
     total_price = models.FloatField()
     user_id = models.ForeignKey(Portal_user_profile,on_delete=models.CASCADE)

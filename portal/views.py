@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse,redirect
-from .models import Portal_user,Portal_user_profile,food_item,foods_order,food_item_list_in_orders,Test_Result
+from .models import Portal_user,Portal_user_profile,food_item,foods_order,food_item_list_in_orders,Test_Result,Medicine_list,Medicare_order
 from portal_official.models import official_athorities_list
 from random import randint
 from datetime import datetime,timedelta
@@ -222,6 +222,9 @@ def queries(request,query='profile'):
                                 user=login,
                                 localbody= currentlb.localbody,
                             ).save()
+                            remaining = food_item.objects.get(item_id = orders)
+                            remaining.item_qty = remaining.item_qty-int(value)
+                            remaining.save()
                             print("loop1",a)
                         
                     foodorderedlist = food_item_list_in_orders.objects.filter(uid=u_id,user=login)
@@ -287,6 +290,62 @@ def queries(request,query='profile'):
                 else:
                     return HttpResponse("Errir in PoSt")
                 return render(request,'portal/gettestresult.html',{'result':result})
+
+            elif query == 'medicare':
+                try:
+                    login = request.session['login']
+                    currentuser = Portal_user_profile.objects.get(login = login)
+                    med_items = Medicine_list.objects.filter(localbody = currentuser.localbody,deleted = False)
+                    order_items = Medicare_order.objects.filter(localbody = currentuser.localbody,user_id=currentuser)
+
+
+                    return render(request, 'portal/medicare.html',{'medicines':med_items,'orders':order_items})
+                except:
+                    pass
+                return render(request,'portal/medicare.html')
+
+            elif query == 'mediorder':
+                try:
+                    login = request.session['login']
+                    currentuser = Portal_user_profile.objects.get(login = login)
+                    med_items = Medicine_list.objects.get(localbody = currentuser.localbody,deleted = False,medicine_id=request.GET['medicineid'])
+
+                    return render(request, 'portal/mediorder.html',{'medicine':med_items})
+                except:
+                    return redirect('portal/q/medicare')
+            elif query == 'confirmmediorder':
+                if request.POST:
+                    if request.session.get('medicine_crsftoken') != request.POST['csrfmiddlewaretoken']:
+                        medicine_id = request.POST['mediid']
+                        medicine_qty = request.POST['mediqty']
+
+                        login = request.session['login']
+                        currentuser = Portal_user_profile.objects.get(login = login)
+                        medicine = Medicine_list.objects.get(localbody = currentuser.localbody,deleted = False,medicine_id=request.POST['mediid'])
+                        totalprice = medicine.medicine_price * int(medicine_qty)
+                        now = datetime.now()
+
+                        Medicare_order(
+                            medicine_id = medicine,
+                            medicine_qty = int(medicine_qty),
+                            order_date = now.strftime("%Y-%m-%d"),
+                            total_price = totalprice,
+                            user_id = currentuser,
+                            localbody = currentuser.localbody
+                        ).save()
+
+                        medicine.medicine_qty = medicine.medicine_qty - int(medicine_qty)
+                        medicine.save()
+                        request.session['medicine_crsftoken']=request.POST['csrfmiddlewaretoken']
+                        html = """ <script> alert('Order Successfull');window.location='/portal/q/medicare'</script>  """
+
+                        
+                    else:
+                        html = """ <script> alert('Duplicate Token');window.location='/portal/q/medicare'</script>  """
+                    return HttpResponse(html)
+                else:
+                    return redirect('portal/q/medicare')
+
             else:
                 return render(request,'portal/404.html')
             #------------------------------------------------------------

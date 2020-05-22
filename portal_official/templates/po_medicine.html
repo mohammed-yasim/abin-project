@@ -19,7 +19,7 @@
 {% for medicine in medicines %}
 <tr class="{% if medicine.medicine_qty == 0 %} bg-warning text-dark {% endif %}">
 <td>{{medicine.medicine_name}}</td>
-<td>{{medicine.medicine_price}}</td>
+<td>{{medicine.medicine_price}} per {{medicine.quantity_type}}</td>
 <td>{{medicine.medicine_qty}} {{medicine.quantity_type}}</td>
 <td class="text-center">
 <div class="btn-group"><a class="btn btn-primary btn-sm" href="/portal_official/medicine_update?medicineid={{medicine.medicine_id}}"><i class="fa fa-edit"></i> Update</a>
