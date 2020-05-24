@@ -1,0 +1,110 @@
+{% extends "payment_base.html" %}
+{% load static %}
+{% block  title %}Payment{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="row justify-content-center">
+        <div class="col-sm-8 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <address>
+                                <strong>{{user.localbody.localbody_name}}</strong>
+                                <br>
+                                {{user.localbody.localbody_type}}
+                                <br>
+                                {{user.localbody.localbody_district}}
+                                <br>
+                                <abbr title="Phone">Ph No:</abbr> {{user.localbody.localbody_admin.contact_no}}
+                            </address>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                            <p>
+                                <em>Date: {% now 'd-m-Y' %} </em></p>
+                                <p>
+                                <em>Time: {% now 'h:i:s' %} </em>
+                            </p>
+                            <p>
+                                <em>Order Id : {{request.POST.orderid}}</em>
+                            </p>
+                        </div>
+                    </div>
+                    <form method="POST" class="" action="/payment_gateway/checkout/"> 
+                        <div class="form-row">
+                            <div class="text-center">
+                                <h1>Receipt</h1>
+                            </div>
+                            </span>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Service</th>
+                                        
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="col-md-10"><em>{{request.POST.payment}} </em></h4>
+                                        </td>
+                                       
+                                        <td class="col-md-1 text-center">{{request.POST.total}}</td>
+                                        <td class="col-md-1 text-center">{{request.POST.total}}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>   </td>
+                                     
+                                        <td class="text-right">
+                                            <p>
+                                                <strong>Subtotal: </strong>
+                                            </p>
+                                            <p>
+                                                <strong>Tax (2%): </strong>
+                                            </p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p>
+                                                <strong>{{request.POST.total}}</strong>
+                                            </p>
+                                            <p>
+                                                <strong>{{data.tax}}</strong>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>   </td>
+                                      
+                                        <td class="text-right">
+                                            <h4><strong>Total: </strong></h4>
+                                        </td>
+                                        <td class="text-center text-danger">
+                                            <h4><strong>&#8377;{{data.total}}</strong></h4>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group">
+                            
+                                {% csrf_token %}
+                                <input type="hidden" name="payment" value="{{request.POST.payment}}">
+                                <input type="hidden" name="orderid" value="{{request.POST.orderid}}">
+                                <input type="hidden" name="total" value="{{data.total}}">
+                                <button type="submit" class="btn btn-success btn-lg btn-block">
+                                Pay Now   <span class="glyphicon glyphicon-chevron-right"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

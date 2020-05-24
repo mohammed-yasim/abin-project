@@ -54,6 +54,7 @@
                             <th>Order Date</th>
                             <th>Quantity Ordered</th>
                             <th>Total Price</th>
+                            <th>Payment Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,6 +65,20 @@
                             <td>{{medicine.order_date}} </td>
                             <td>{{medicine.medicine_qty}} {{medicine.medicine_id.quantity_type}}</td>
                             <td>{{medicine.total_price}} </td>
+                            <td>
+                                {% if medicine.confirmed == True %}
+                            <p class="text-center text-success ">Paid</p>
+                            {% else %}
+                            <form method="POST" class="text-center" action="/payment_gateway/"> 
+                                {% csrf_token %}
+                                <input type="hidden" name="payment" value="medicare">
+                                <input type="hidden" name="orderid" value="{{medicine.med_order_id}}">
+                                <input type="hidden" name="total" value="{{medicine.total_price}}">
+                                <input type="submit" value="Pay Now" class="btn btn-primary btn-sm">
+
+                            </form>
+                            {% endif %}
+                            </td>
                         </tr>
 
                         {% endfor %}

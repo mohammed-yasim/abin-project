@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <title> {% block title %}{% endblock title %} | {{ settings.PORTAL_NAME }} Official :: {{ settings.PROJECT_NAME }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mdb.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/news.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <style>
+        html {
+            background:white;
+            font-size:90%;
+        }
+
+        .splash-container {
+            min-height: 80vh;
+        }
+
+        body {
+            -ms-overflow-style: none;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-primary" style="background-image:url('/static/sb/cover.jpg');background-size:cover;">
+    <main class="splash-container">
+        
+    {% block content %}
+      
+
+    {% endblock content %}</main>
+<footer>
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3 mb-4">{{ settings.PROJECT_NAME }} © {% now 'Y' %} Copyright <a href="">
+        Abin T John</a>
+</div>
+<!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/mdb.min.js' %}"></script>
+
+</body>
+</html>

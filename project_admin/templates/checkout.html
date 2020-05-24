@@ -1,0 +1,74 @@
+{% extends "payment_base.html" %}
+{% load static %}
+{% block  title %}Payment{% endblock %}
+
+{% block content %}
+<div class="container pt-5">
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+            <div class="card card-primary shadow shadow-lg ">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-heading">Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-block my-3">
+                        <div class="custom-control custom-radio">
+                            <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked
+                                required>
+                            <label class="custom-control-label" for="credit">Credit card</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+                            <label class="custom-control-label" for="debit">Debit card</label>
+                        </div>
+                    </div>
+                    <form method="POST" action="/payment_gateway/payment_success/">
+                        {% csrf_token %}
+                        <input type="hidden" name="payment" value="{{request.POST.payment}}">
+                        <input type="hidden" name="orderid" value="{{request.POST.orderid}}">
+                        <input type="hidden" name="total" value="{{data.total}}">
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label for="cc-name">Name on card</label>
+                                <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                                <small class="text-muted">Full name as displayed on card</small>
+                                <div class="invalid-feedback">
+                                    Name on card is required
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label for="cc-number">Credit card number</label>
+                                <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Credit card number is required
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 mb-3">
+                                <label for="cc-expiration">Expiration</label>
+                                <input type="text" class="form-control" id="cc-expiration" placeholder="MM/YY" required>
+                                <div class="invalid-feedback">
+                                    Expiration date required
+                                </div>
+                            </div>
+                            <div class="col-sm-4 mb-3">
+                                <label for="cc-cvv">CVV</label>
+                                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Security code required
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mb-4">
+                        <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

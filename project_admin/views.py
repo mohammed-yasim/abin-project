@@ -1,9 +1,66 @@
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect
 from django.http import JsonResponse
 from django.core import serializers
 from .models import Global_variable
 from portal_official.models import official_athorities_list
+from portal.models import Portal_user_profile as ppprofile,Medicare_order,foods_order
 import json
+
+def payment_gen(request):
+    if request.POST:
+        data = {}
+        data['tax'] = float(request.POST['total']) * (2/100)
+        data['total'] = data['tax'] + float(request.POST['total'])
+
+        login = request.session['login']
+        currentuser = ppprofile.objects.get(login = login)
+        return render(request,'payment_gen.html',{'user':currentuser,'data':data})
+    else:
+        html = """<script> window.location ='/portal' </script>"""
+        return HttpResponse(html)    
+
+def checkout(request):
+    if request.POST:
+        return render(request,'checkout.html')
+    else:
+        html = """<script> window.location ='/portal' </script>"""
+        return HttpResponse(html)
+
+
+def payment_success(request):
+    if request.POST:
+        
+        if request.POST['payment'] == 'medicare':
+            login = request.session['login']
+            currentuser = ppprofile.objects.get(login = login)
+            medipay = Medicare_order.objects.get(
+                user_id = currentuser,
+                med_order_id = request.POST['orderid']
+            )
+            medipay.confirmed = True
+            medipay.save()
+            html = """<script> alert('Payment Successful');window.location ='/portal/q/medicare' </script>"""
+            return HttpResponse(html)
+        
+        elif request.POST['payment'] == 'kitchen':
+            login = request.session['login']
+            currentuser = ppprofile.objects.get(login = login)
+            foodpay = foods_order.objects.get(
+                user_id = currentuser,
+                order_id = request.POST['orderid']
+            )
+            foodpay.confirmed = True
+            foodpay.save()
+            html = """<script> alert('Payment Successful');window.location ='/portal/q/kitchen' </script>"""
+            return HttpResponse(html)
+        
+        else:
+            html = """<script> alert('Error');window.location ='/portal' </script>"""
+            return HttpResponse(html)
+    
+    else:
+        html = """<script> alert('Error');window.location ='/portal' </script>"""
+        return HttpResponse(html)
 
 # Create your views here.
 def api(requests, query=''):
@@ -102,3 +159,4 @@ def profile_api(requests,query=''):
         json_template['status'] =  'error'
         json_template['message'] = error
         return JsonResponse(json_template)
+

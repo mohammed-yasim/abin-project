@@ -6,61 +6,12 @@
     <!-- ========================= SECTION CONTENT ========================= -->
 
     <div class="row justify-content-center">
-     {% if data is not None %}
-    <div class="{% if food_items is not None %} col-lg-11 {% else %} col-lg-8 {% endif %} mb-3">
-    <div class="card shadow shadow-lg ">
-    <div class="card-header bg-primary text-white">
-        <p class="card-title font-weight-bold">My Orders
-        <a href="/portal/q/kitchen"
-            class="float-right btn btn-sm btn-warning btn-toolbar">
-            <span aria-hidden="true"><i class="fa fa-sync-alt"></i></span></a>
-            </p>
-    </div>
-    <div class="card-body bg-white">
-   
-<table class="table table-bordered">
-<thead>
-<tr>
-<th>Order ID</th>
-<th>Items</th>
-<th>Price</th>
-<th>Address</th>
-<th>Actions</th>
-
-</tr>
-<tbody>
-
-{% for datas in data%}
-<tr>
-    <td>{{datas.order_id}}</td>
-    <td>
-    {% for dataset in list %}
-    {% if dataset.uid == datas.uid %}
-     <li>
-    {{ dataset.item_id.item_name}} :  {{ dataset.item_qty}} 
-    </li>
-    {% endif %}
-    {% endfor %}
-    </td>
-    <td>{{ datas.total_price }}</td>
-    <td><ol>{{ datas.user_id.fname }} {{ datas.user_id.lname }}</ol>
-    <ol>{{datas.user_id.address}}</ol>
-    </td>
-    
-</tr>
-{% endfor %}
-</tbody>
-</table>
-    </div>
-     <p class="text-center">{% now 'd-m-Y'%}</p>
-</div>
-</div>
-{% endif %}
+        
         <main class="{% if data is not None %} col-lg-5 {% else %} col-lg-8 {% endif %}">
             {% if food_items is not None %}
             <div class="card shadow">
                 <form id="form_data">
-                {% csrf_token %}
+                    {% csrf_token %}
                     <table class="table table-borderless">
                         <thead class="card-header text-white bg-primary">
                             <tr class="small text-uppercase">
@@ -75,7 +26,8 @@
                                 <td>
                                     <figure class="itemside">
                                         <figcaption class="info">
-                                            <a href="#" class="title font-weight-bold text-dark">{{ food.item_name }}</a>
+                                            <a href="#"
+                                                class="title font-weight-bold text-dark">{{ food.item_name }}</a>
                                             <p class="text-muted small">{{ food.item_description }}</p>
                                         </figcaption>
                                     </figure>
@@ -145,13 +97,78 @@
                 <p class="icontext"><i class="icon text-success fa fa-truck"></i> Delivery within 1-2 hours</p>
             </div>
             {% else %}
-            <div class="alert alert-danger"> 
-            {% autoescape off %}
-            {{message}} 
-            {% endautoescape %}</div>
+            <div class="alert alert-danger">
+                {% autoescape off %}
+                {{message}}
+                {% endautoescape %}</div>
             {% endif %}
 
         </main> <!-- col.// -->
+
+        {% if data is not None %}
+        <div class="{% if food_items is not None %} col-lg-11 {% else %} col-lg-8 {% endif %} mb-3">
+            <div class="card shadow shadow-lg ">
+                <div class="card-header bg-primary text-white">
+                    <p class="card-title font-weight-bold">My Orders
+                        <a href="/portal/q/kitchen" class="float-right btn btn-sm btn-warning btn-toolbar">
+                            <span aria-hidden="true"><i class="fa fa-sync-alt"></i></span></a>
+                    </p>
+                </div>
+                <div class="card-body bg-white">
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Items</th>
+                                <th>Price</th>
+                                <th>Address</th>
+                                <th>Actions</th>
+
+                            </tr>
+                        <tbody>
+
+                            {% for datas in data%}
+                            <tr>
+                                <td>{{datas.order_id}}</td>
+                                <td>
+                                    {% for dataset in list %}
+                                    {% if dataset.uid == datas.uid %}
+                                    <li>
+                                        {{ dataset.item_id.item_name}} : {{ dataset.item_qty}}
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>{{ datas.total_price }}</td>
+                                <td>
+                                    <ol>{{ datas.user_id.fname }} {{ datas.user_id.lname }}</ol>
+                                    <ol>{{datas.user_id.address}}</ol>
+                                </td>
+                                <td>
+                                    {% if datas.confirmed == True %}
+                                    <p class="text-center text-success ">Paid</p>
+                                    {% else %}
+                                    <form method="POST" class="text-center" action="/payment_gateway/">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="payment" value="kitchen">
+                                        <input type="hidden" name="orderid" value="{{datas.order_id}}">
+                                        <input type="hidden" name="total" value="{{datas.total_price}}">
+                                        <input type="submit" value="Pay Now" class="btn btn-primary btn-sm">
+
+                                    </form>
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-center">{% now 'd-m-Y'%}</p>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <!-- ========================= SECTION CONTENT END// ========================= -->
 
@@ -164,7 +181,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div  class="modalbody">
+                <div class="modalbody">
                 </div>
             </div>
         </div>
@@ -187,20 +204,20 @@
         $("#confirmfoodordermodal .modalbody").html('<div class="modal-body">Loading...</div><div class="modal-footer"></div>');
 
         $.ajax({
-           type: "POST",
-           url: '/portal/q/orderfood',
-           cache:false,
-           data: form_data,
-           success:function(data){
-               $("#confirmfoodordermodal .modalbody").html(data);
-               },
-            error:function(data){
+            type: "POST",
+            url: '/portal/q/orderfood',
+            cache: false,
+            data: form_data,
+            success: function (data) {
+                $("#confirmfoodordermodal .modalbody").html(data);
+            },
+            error: function (data) {
                 $("#confirmfoodordermodal .modal-body").html(data.statusText);
             }
         });
     }
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         $("#confirmfoodordermodal").modal({
             keboard: false,
             backdrop: 'static',

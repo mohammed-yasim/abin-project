@@ -3,6 +3,7 @@ from project_admin.models import Global_variable as gvar
 from .models import official_athorities_list, official_user
 from portal.models import Portal_user_profile, food_item,food_item_list_in_orders,foods_order,Test_Result,Medicine_list,Medicare_order
 import hashlib,datetime
+from django.db.models import Count
 # Create your views here.
 
 
@@ -16,8 +17,13 @@ def index(request):
 def dashboard(request):
     if not request.session.has_key('official'):
         return redirect('/portal_official/login')
-    return render(request, 'po_dashboard.html')
-# -----------------------------------------
+    currentlb = official_athorities_list.objects.get(
+        localbody_name=request.session['localbody'], localbody_type=request.session['lbtype'])
+    data = {}
+    data['foodcount'] = foods_order.objects.filter(localbody=currentlb)
+    data['medicount'] = Medicare_order.objects.filter(localbody=currentlb)
+    return render(request, 'po_dashboard.html',{'data':data})
+# ----------------------------------------
 # @@@@@@@@@
 # PROFILES
 # @@@@@@@@@
